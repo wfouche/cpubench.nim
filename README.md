@@ -11,7 +11,6 @@ num_cores = 2
 
 ```
 // https://godbolt.org/
-//
 long countDownToZero(long n) {
     while (n) {
         n -= 1;
