@@ -74,4 +74,4 @@ let ghz: float = countdown_value.toFloat() / 1000000.0 / duration_ms.toFloat()
 
 echo "dop = ", dop.formatFloat(ffDecimal,1)
 echo "ghz = ", ghz.formatFloat(ffDecimal,3)
-echo "num_cores = ", dop.int, " (", num_procs, ")"
+echo "num_cores = ", dop.formatFloat(ffDecimal,1), " (", num_procs, ")"
