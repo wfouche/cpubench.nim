@@ -2,7 +2,8 @@
 
 ```
 num_threads = 4
-counter = 29992788380, duration_ms = 10005
+counter = 29992788380
+duration_ms = 10005
 dop = 2.0
 ghz = 2.998
 num_cores = 2
