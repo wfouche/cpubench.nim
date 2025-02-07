@@ -48,11 +48,12 @@ proc threadTask(threadId: int) {.thread.} =
         sleep(1)
     timings[threadId] = countDownToZeroInMillis(countdown_value)
 
-echo "num_procs = ", num_procs
+echo "num_threads = ", num_procs
 
 (countdown_value,duration_ms) = calibrateMainLoop()
 
-echo "counter = ", countdown_value, ", duration_ms = ", duration_ms
+echo "counter = ", countdown_value
+echo "duration_ms = ", duration_ms
 
 for i in 0..<num_procs:
     createThread(threads[i], threadTask, i)
