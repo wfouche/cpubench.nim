@@ -1,5 +1,6 @@
 import std/cpuinfo
 import std/monotimes
+import std/cmdline
 import std/os
 import times
 import system
@@ -48,30 +49,40 @@ proc threadTask(threadId: int) {.thread.} =
         sleep(1)
     timings[threadId] = countDownToZeroInMillis(countdown_value)
 
-echo "num_threads = ", num_procs
+proc cpubench =
+    echo "num_threads = ", num_procs
 
-(countdown_value,duration_ms) = calibrateMainLoop()
+    (countdown_value,duration_ms) = calibrateMainLoop()
 
-echo "counter = ", countdown_value
-echo "duration_ms = ", duration_ms
+    echo "counter = ", countdown_value
+    echo "duration_ms = ", duration_ms
 
-for i in 0..<num_procs:
-    createThread(threads[i], threadTask, i)
+    for i in 0..<num_procs:
+        createThread(threads[i], threadTask, i)
 
-sleep(3000)
+    sleep(3000)
 
-threads_waiting = 0
+    threads_waiting = 0
 
-for i in 0..<num_procs:
-    threads[i].joinThread()
+    for i in 0..<num_procs:
+        threads[i].joinThread()
 
-var tsum: int64 = 0
-for i in 0..<num_procs:
-    tsum += timings[i]
+    var tsum: int64 = 0
+    for i in 0..<num_procs:
+        tsum += timings[i]
 
-let dop: float = (tsum.toFloat() / num_procs.toFloat()) / duration_ms.toFloat()
-let ghz: float = countdown_value.toFloat() / 1000000.0 / duration_ms.toFloat()
+    let dop: float = (tsum.toFloat() / num_procs.toFloat()) / duration_ms.toFloat()
+    let ghz: float = countdown_value.toFloat() / 1000000.0 / duration_ms.toFloat()
 
-echo "dop = ", dop.formatFloat(ffDecimal,1)
-echo "ghz = ", ghz.formatFloat(ffDecimal,3)
-echo "num_cores = ", dop.formatFloat(ffDecimal,1), " (", num_procs, ")"
+    echo "dop = ", dop.formatFloat(ffDecimal,1)
+    echo "ghz = ", ghz.formatFloat(ffDecimal,3)
+    echo "num_cores = ", dop.formatFloat(ffDecimal,1), " (", num_procs, ")"
+
+var iterations: int = 1
+
+if paramCount() == 1:
+    iterations = parseInt(paramStr(1))
+
+for i in 0..<iterations:
+    if i > 0: echo ""
+    cpubench()
