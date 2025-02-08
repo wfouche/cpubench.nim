@@ -30,7 +30,7 @@ proc countDownToZeroInMillis(n: int64): int64 =
 
 proc calibrateMainLoop(): (int64, int64) =
     let target_duration_ms: int64 = 10 * 1000
-    var current_counter: int64 = 2;
+    var current_counter: int64 = 2
     var current_duration_ms: int64 = 0
     while true:
         current_duration_ms = countDownToZeroInMillis(current_counter)
