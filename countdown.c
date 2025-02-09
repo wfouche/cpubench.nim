@@ -1,6 +1,6 @@
 #include <countdown.h>
 
-long countDownToZero(long n) {
+long countDownToZero(int64_t n) {
   while (n) {
     n -= 1;
   }

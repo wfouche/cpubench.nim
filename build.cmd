@@ -1,0 +1,1 @@
+nim c -d:release --threads:on -r cpubench.nim

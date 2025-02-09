@@ -19,7 +19,7 @@ var
 let
     num_procs = countProcessors()
 
-{.compile("countdown.c", "-I. -c -O").}
+{.compile("countdown.c", "-std=c99 -I. -c -O").}
 
 func countDownToZero(n: int64): int64 {.importc: "countDownToZero".}
 
