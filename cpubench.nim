@@ -16,6 +16,10 @@ var
     duration_ms: int64
     threads_waiting: uint8 = 1
 
+var
+    target_duration_ms: int64 = 1 * 1000
+    delta_ms: int64 = 10
+
 let
     num_procs = countProcessors()
 
@@ -29,7 +33,6 @@ proc countDownToZeroInMillis(n: int64): int64 =
     return (getMonoTime()-startTime).inMilliseconds
 
 proc calibrateMainLoop(): (int64, int64) =
-    let target_duration_ms: int64 = 10 * 1000
     var current_counter: int64 = 2
     var current_duration_ms: int64 = 0
     while true:
@@ -38,7 +41,7 @@ proc calibrateMainLoop(): (int64, int64) =
             current_counter *= 2
         else:
             echo "  ", current_counter, " ", current_duration_ms
-            if abs(target_duration_ms-current_duration_ms) < 50:
+            if abs(target_duration_ms-current_duration_ms) <= delta_ms:
                 break
             var current_counter2: float = current_counter * target_duration_ms / current_duration_ms
             current_counter = current_counter2.toInt()
@@ -78,10 +81,11 @@ proc cpubench =
     echo "ghz = ", ghz.formatFloat(ffDecimal,3)
     echo "num_cores = ", dop.formatFloat(ffDecimal,1), " (", num_procs, ")"
 
-var iterations: int = 1
+let iterations: int = 1
 
-if paramCount() == 1:
-    iterations = parseInt(paramStr(1))
+if paramCount() == 2:
+    target_duration_ms = parseInt(paramStr(1))
+    delta_ms = parseInt(paramStr(2))
 
 for i in 0..<iterations:
     if i > 0: echo ""
