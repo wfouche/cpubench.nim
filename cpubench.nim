@@ -37,7 +37,7 @@ proc calibrateMainLoop(): (int64, int64) =
         if current_duration_ms < 100:
             current_counter *= 2
         else:
-            #echo current_counter, " ", current_duration_ms
+            echo "  ", current_counter, " ", current_duration_ms
             if abs(target_duration_ms-current_duration_ms) < 50:
                 break
             var current_counter2: float = current_counter * target_duration_ms / current_duration_ms
