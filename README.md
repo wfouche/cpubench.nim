@@ -10,8 +10,9 @@ num_cores = 2
 ```
 
 ```
-// https://godbolt.org/
-long countDownToZero(long n) {
+#include <stdint.h>
+
+int64_t countDownToZero(int64_t n) {
     while (n) {
         n -= 1;
     }
@@ -20,6 +21,7 @@ long countDownToZero(long n) {
 ```
 
 ```
+// https://godbolt.org/
 countDownToZero:
         testq   %rdi, %rdi
         je      .L2
