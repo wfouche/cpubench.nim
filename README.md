@@ -21,7 +21,7 @@ int64_t countDownToZero(int64_t n) {
 ```
 
 ```
-// https://godbolt.org/
+// https://godbolt.org, x86-64 gcc 14.2:  -O countdown.c 
 countDownToZero:
         testq   %rdi, %rdi
         je      .L2
@@ -30,5 +30,17 @@ countDownToZero:
         jne     .L3
 .L2:
         movl    $0, %eax
+        ret
+```
+
+```
+// https://godbolt.org, ARM64 gcc 14.2.0:  -O countdown.c 
+countDownToZero(long):
+        cbz     x0, .L2
+.L3:
+        subs    x0, x0, #1
+        bne     .L3
+.L2:
+        mov     x0, 0
         ret
 ```
