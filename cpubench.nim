@@ -17,8 +17,8 @@ var
     threads_waiting: uint8 = 1
 
 var
-    target_duration_ms: int64 = 1 * 1000
-    delta_ms: int64 = 10
+    target_duration_ms: int64 = 10 * 1000
+    delta_ms: int64 = 50
 
 let
     num_procs = countProcessors()
