@@ -17,8 +17,8 @@ var
     threads_waiting: uint8 = 1
 
 var
-    target_duration_ms: int64 = 10 * 1000
-    delta_ms: int64 = 50
+    target_duration_ms: int64 = 10000
+    delta_ms: int64 = 100
 
 let
     num_procs = countProcessors()
@@ -35,16 +35,20 @@ proc countDownToZeroInMillis(n: int64): int64 =
 proc calibrateMainLoop(): (int64, int64) =
     var current_counter: int64 = 2
     var current_duration_ms: int64 = 0
+    var iterations: int = 0
     while true:
         current_duration_ms = countDownToZeroInMillis(current_counter)
         if current_duration_ms < 100:
             current_counter *= 2
         else:
+            iterations += 1
             echo "  ", current_counter, " ", current_duration_ms
             if abs(target_duration_ms-current_duration_ms) <= delta_ms:
                 break
             var current_counter2: float = current_counter * target_duration_ms / current_duration_ms
             current_counter = current_counter2.toInt()
+            if iterations == 10:
+                return (0,0)
     return (current_counter, current_duration_ms)
 
 proc threadTask(threadId: int) {.thread.} = 
@@ -56,30 +60,33 @@ proc cpubench =
     echo "num_threads = ", num_procs
 
     (countdown_value,duration_ms) = calibrateMainLoop()
+    if countdown_value != 0:
+        echo "counter = ", countdown_value
+        echo "duration_ms = ", duration_ms
 
-    echo "counter = ", countdown_value
-    echo "duration_ms = ", duration_ms
+        for i in 0..<num_procs:
+            createThread(threads[i], threadTask, i)
 
-    for i in 0..<num_procs:
-        createThread(threads[i], threadTask, i)
+        sleep(3000)
 
-    sleep(3000)
+        threads_waiting = 0
 
-    threads_waiting = 0
+        for i in 0..<num_procs:
+            threads[i].joinThread()
 
-    for i in 0..<num_procs:
-        threads[i].joinThread()
+        var tsum: int64 = 0
+        for i in 0..<num_procs:
+            tsum += timings[i]
 
-    var tsum: int64 = 0
-    for i in 0..<num_procs:
-        tsum += timings[i]
+        let dop: float = (tsum.toFloat() / num_procs.toFloat()) / duration_ms.toFloat()
+        #et ghz: float = countdown_value.toFloat() / 1000000.0 / duration_ms.toFloat()
 
-    let dop: float = (tsum.toFloat() / num_procs.toFloat()) / duration_ms.toFloat()
-    #et ghz: float = countdown_value.toFloat() / 1000000.0 / duration_ms.toFloat()
-
-    echo "dop = ", dop.formatFloat(ffDecimal,1)
-    #cho "ghz = ", ghz.formatFloat(ffDecimal,3)
-    echo "num_cores = ", dop.formatFloat(ffDecimal,1), " (", num_procs, ")"
+        echo "dop = ", dop.formatFloat(ffDecimal,1)
+        #cho "ghz = ", ghz.formatFloat(ffDecimal,3)
+        echo "num_cores = ", dop.formatFloat(ffDecimal,1), " (", num_procs, ")"
+    else:
+        echo ""
+        echo "Unstable computer environment detected, exiting."
 
 let iterations: int = 1
 
