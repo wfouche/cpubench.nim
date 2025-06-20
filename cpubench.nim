@@ -86,7 +86,7 @@ proc cpubench =
 
         echo "dop = ", dop.formatFloat(ffDecimal,1)
         #cho "ghz = ", ghz.formatFloat(ffDecimal,3)
-        echo "num_cores = ", dop.formatFloat(ffDecimal,1), " (", num_procs, ")"
+        echo "num_cores = ", (dop+0.499).int, " (", num_procs, ")"
     else:
         echo ""
         echo "Unstable computer environment detected, exiting."
