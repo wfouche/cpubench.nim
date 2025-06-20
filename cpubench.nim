@@ -73,12 +73,15 @@ proc cpubench =
 
         for i in 0..<num_procs:
             threads[i].joinThread()
+            #echo timings[i]
 
         var tsum: int64 = 0
+        var tsum2: int64 = 0
         for i in 0..<num_procs:
             tsum += timings[i]
+            tsum2 += duration_ms
 
-        let dop: float = (tsum.toFloat() / num_procs.toFloat()) / duration_ms.toFloat()
+        let dop: float = (tsum2.toFloat() / tsum.toFloat()) * num_procs.toFloat() 
         #et ghz: float = countdown_value.toFloat() / 1000000.0 / duration_ms.toFloat()
 
         echo "dop = ", dop.formatFloat(ffDecimal,1)
