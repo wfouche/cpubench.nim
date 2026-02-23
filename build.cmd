@@ -1,2 +1,2 @@
-..\..\Downloads\choosenim-0.8.12_windows_amd64.exe 2.2.6
+..\..\Downloads\choosenim-0.8.12_windows_amd64.exe 2.2.8
 nim c -d:release --threads:on -r cpubench.nim
