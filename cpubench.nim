@@ -1,6 +1,5 @@
 import std/cpuinfo
 import std/monotimes
-import std/cmdline
 import std/os
 import times
 import system
